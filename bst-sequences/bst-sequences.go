@@ -238,7 +238,7 @@ func getCombination(start, total, sample int, prefix, diff []int) {
 		count++
 		return
 	}
-	for p := start; p < total; p++ {
+	for p := start; p <= total - sample; p++ {
 		size := len(prefix)
 		diffSize := len(diff)
 		if size == 0 {
