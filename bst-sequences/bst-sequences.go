@@ -291,7 +291,7 @@ func weaveTwoArray(start, sample int, wtaCtrl *weaveTwoArrayCtrl) {
 		count4++
 		return
 	}
-	for p := start; p < wtaCtrl.total; p++ {
+	for p := start; p <= wtaCtrl.total - sample; p++ {
 		size := len(wtaCtrl.prefix)
 		diffSize := len(wtaCtrl.diff)
 		if size == 0 {
