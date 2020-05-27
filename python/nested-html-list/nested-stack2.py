@@ -26,7 +26,7 @@ h12 = Heading(1, "conclusion")
 def PrintNode(node):
     for _ in range(node.heading.weight * 2):
         sys.stdout.write(" ")
-    print node.heading.text + "\n"
+    print(node.heading.text + "\n")
     for c in node.children:
         PrintNode(c)
 
