@@ -1,9 +1,11 @@
+# Suprisingly, the recursive approach is faster.
+# It could be due to not having to create a list of choices.
 class Solution:
+    '''
     def solveSudoku(self, board: List[List[str]]) -> None:
         """
         Do not return anything, modify board in-place instead.
         """
-        '''
         rowRemDigits = [set([str(c) for c in range(1, 10)]) for _ in range(9)]
         colRemDigits = [set([str(c) for c in range(1, 10)]) for _ in range(9)]
         gridRemDigits = [set([str(c) for c in range(1, 10)]) for _ in range(9)]
@@ -68,7 +70,9 @@ class Solution:
             board[row][col] = digit
             stack.append((cell, digit, choices))
         # print(board)
-        '''
+    '''
+    '''
+    def solveSudoku(self, board: List[List[str]]) -> None:
         rowDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
         colDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
         gridDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
@@ -113,7 +117,7 @@ class Solution:
         
         cellToFill = sorted(cellToFill, key=cmp_to_key(cell_comp), reverse=True)
         #print(cellToFill)
-
+        
         stack = []
         while cellToFill:
             cell = cellToFill.pop()
@@ -139,3 +143,69 @@ class Solution:
             gridDigitsUsed[(row // 3) * 3 + col // 3][v] = True
             board[row][col] = digit
             stack.append((cell, digit, choices))
+    '''
+    def solveSudoku(self, board: List[List[str]]) -> None:
+        rowDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
+        colDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
+        gridDigitsUsed = [[False for _ in range(9)] for _ in range(9)]
+        cellToFill = []
+
+        def getChoices(cell):
+            # nonlocal rowDigitsUsed, colDigitsUsed, gridDigitsUsed
+            row, col = cell
+            gi = (row // 3) * 3 + col // 3
+            choices = []
+            for i in range(9):
+                if not rowDigitsUsed[row][i] and not colDigitsUsed[col][i] and not gridDigitsUsed[gi][i]:
+                    choices.append(str(i + 1))
+            return choices
+
+        def cell_comp(c1, c2):
+            c1Choices = getChoices(c1)
+            c2Choices = getChoices(c2)
+            #print(c1, ": ", c1Choices, c2, ": ", c2Choices)
+            #print(rowRemDigits[row1], colRemDigits[col1], gridRemDigits[gi1])
+            #print(rowRemDigits[row2], colRemDigits[col2], gridRemDigits[gi2])
+            sz1 = len(c1Choices)
+            sz2 = len(c2Choices)
+            if sz1 > sz2:
+                return 1
+            elif sz1 < sz2:
+                return -1
+            else:
+                return 0
+
+        for row in range(9):
+            rowDigits = []
+            for col in range(9):
+                digit = board[row][col]
+                if board[row][col] == '.':
+                    cellToFill.append((row, col))
+                else:
+                    v = int(digit) - 1
+                    rowDigitsUsed[row][v] = True
+                    colDigitsUsed[col][v] = True
+                    gridDigitsUsed[(row // 3) * 3 + col // 3][v] = True
+        
+        cellToFill = sorted(cellToFill, key=cmp_to_key(cell_comp))
+        #print(cellToFill)
+        
+        solved = False
+        def fill(cell_no):
+            nonlocal solved
+            if cell_no == len(cellToFill):
+                solved = True
+                return
+            row, col = cellToFill[cell_no]
+            gi = (row // 3) * 3 + col // 3
+            for v in range(9):
+                if not rowDigitsUsed[row][v] and not colDigitsUsed[col][v] and not gridDigitsUsed[gi][v]:
+                    rowDigitsUsed[row][v] = colDigitsUsed[col][v] = gridDigitsUsed[gi][v] = True
+                    board[row][col] = str(v+1)
+                    fill(cell_no + 1)
+                    if solved:
+                        break
+                    rowDigitsUsed[row][v] = colDigitsUsed[col][v] = gridDigitsUsed[gi][v] = False
+                    # board[row][col] = '.'
+        
+        fill(0)
