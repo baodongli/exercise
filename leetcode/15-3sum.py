@@ -22,7 +22,7 @@ class Solution:
                     result.add(tuple(r))
         ans = []
         for r in result:
-            ans.appknd(list(r))
+            ans.append(list(r))
         return ans
         '''
         snums = sorted(nums)
