@@ -1,3 +1,4 @@
+'''
 class Solution:
     def numTrees(self, n: int) -> int:
         def getNumTrees(left, right, countMap):
@@ -23,3 +24,22 @@ class Solution:
             return count
         
         return getNumTrees(1, n, {})
+'''
+class Solution:
+    @cache
+    def numTrees(self, n: int) -> int:
+        if n == 1:
+            return 1
+        if n == 0:
+            return 0
+        count = 0
+        for i in range(n):
+            leftCount = self.numTrees(i)
+            rightCount = self.numTrees(n - i - 1)
+            if leftCount > 0 and rightCount > 0:
+                count += leftCount * rightCount
+            elif leftCount > 0:
+                count += leftCount
+            else:
+                count += rightCount
+        return count
